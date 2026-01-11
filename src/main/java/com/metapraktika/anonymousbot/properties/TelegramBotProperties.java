@@ -1,4 +1,4 @@
-package com.metapraktika.anonymousbot.config;
+package com.metapraktika.anonymousbot.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;

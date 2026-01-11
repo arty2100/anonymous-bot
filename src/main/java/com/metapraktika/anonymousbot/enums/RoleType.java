@@ -1,6 +1,6 @@
 package com.metapraktika.anonymousbot.enums;
 
-public enum UserType {
+public enum RoleType {
     USER,
     ADMIN,
     SUPER_ADMIN

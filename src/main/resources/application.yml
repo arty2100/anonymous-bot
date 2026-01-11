@@ -1,3 +1,9 @@
 spring:
   application:
     name: anonymous-bot
+app:
+  rate-limit:
+    limits:
+      USER: 10
+      ADMIN: 100
+      SUPER_ADMIN: 500

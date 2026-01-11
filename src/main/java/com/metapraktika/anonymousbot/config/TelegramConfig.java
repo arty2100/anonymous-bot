@@ -1,6 +1,6 @@
 package com.metapraktika.anonymousbot.config;
 
-import com.metapraktika.anonymousbot.telegram.LongPolling;
+import com.metapraktika.anonymousbot.telegram.TelegramBot;
 import jakarta.annotation.PostConstruct;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -12,9 +12,9 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 @Configuration
 public class TelegramConfig {
 
-    private final LongPolling telegramBot;
+    private final TelegramBot telegramBot;
 
-    public TelegramConfig(LongPolling telegramBot) {
+    public TelegramConfig(TelegramBot telegramBot) {
         this.telegramBot = telegramBot;
     }
 

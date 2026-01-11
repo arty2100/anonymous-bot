@@ -1,10 +1,10 @@
 package com.metapraktika.anonymousbot.entity;
 
+import com.metapraktika.anonymousbot.enums.RoleType;
 import com.metapraktika.anonymousbot.enums.UserStatus;
-import com.metapraktika.anonymousbot.enums.UserType;
 import jakarta.persistence.*;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "users")
@@ -14,41 +14,38 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "telegram_id", nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private Long telegramId;
 
-    @Column(length = 64)
+    @Column
     private String username;
-
-    @Column(name = "first_name", length = 128)
+    @Column
     private String firstName;
-
-    @Column(name = "last_name", length = 128)
+    @Column
     private String lastName;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 32)
-    private UserType type;
+    @ManyToOne
+    @JoinColumn(name = "role_id", nullable = false)
+    private Role role;
 
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 32)
     private UserStatus status;
-
-    @Column(name = "created_at", nullable = false)
-    private OffsetDateTime createdAt;
-
-    @Column(name = "updated_at", nullable = false)
-    private OffsetDateTime updatedAt;
 
     protected User() {
     }
 
-    public User(Long telegramId, UserType type) {
+    public User(Long telegramId, String username, String firstName, String lastName, Role role, UserStatus status) {
         this.telegramId = telegramId;
-        this.type = type;
-        this.status = UserStatus.ACTIVE;
-        this.createdAt = OffsetDateTime.now();
-        this.updatedAt = OffsetDateTime.now();
+        this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.role = role;
+        this.status = status;
     }
 
 
@@ -60,12 +57,12 @@ public class User {
         this.id = id;
     }
 
-    public Long getTelegramId() {
-        return telegramId;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setTelegramId(Long telegramId) {
-        this.telegramId = telegramId;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     public String getUsername() {
@@ -76,12 +73,12 @@ public class User {
         this.username = username;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public Long getTelegramId() {
+        return telegramId;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setTelegramId(Long telegramId) {
+        this.telegramId = telegramId;
     }
 
     public String getLastName() {
@@ -92,12 +89,25 @@ public class User {
         this.lastName = lastName;
     }
 
-    public UserType getType() {
-        return type;
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
     }
 
-    public void setType(UserType type) {
-        this.type = type;
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     public UserStatus getStatus() {
@@ -108,19 +118,9 @@ public class User {
         this.status = status;
     }
 
-    public OffsetDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(OffsetDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public OffsetDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(OffsetDateTime updatedAt) {
-        this.updatedAt = updatedAt;
+    private boolean isSuperAdmin(User user) {
+        return user != null
+                && user.getRole() != null
+                && user.getRole().getName() == RoleType.SUPER_ADMIN;
     }
 }
