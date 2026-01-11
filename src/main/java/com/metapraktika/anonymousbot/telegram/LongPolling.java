@@ -1,6 +1,6 @@
 package com.metapraktika.anonymousbot.telegram;
 
-import com.metapraktika.anonymousbot.properties.TelegramBotProperties;
+import com.metapraktika.anonymousbot.config.TelegramBotProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
@@ -22,11 +22,17 @@ public class LongPolling extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
+
         System.out.println("onUpdateReceived");
+    }
+
+    public String getBotToken() {
+        return telegramBotProperties.getToken();
     }
 
     @Override
     public String getBotUsername() {
-        return "";
+
+        return telegramBotProperties.getUsername();
     }
 }

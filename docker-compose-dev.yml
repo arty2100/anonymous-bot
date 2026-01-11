@@ -3,11 +3,13 @@ services:
     image: postgres:15
     container_name: anonymous-postgres-dev
     ports:
-      - "5433:5432"
+      - "5432:5432"
     environment:
       POSTGRES_DB: anonymous_bot
       POSTGRES_USER: privet
       POSTGRES_PASSWORD: privet
+      POSTGRES_HOST_AUTH_METHOD: trust
+
     volumes:
       - pgdata:/var/lib/postgresql/data
 
