@@ -1,0 +1,43 @@
+services:
+  app:
+    image: anonymous-bot:latest
+    container_name: anonymous-bot
+    restart: unless-stopped
+
+    ports:
+      - "127.0.0.1:18081:8080"
+
+    volumes:
+      - ./logs:/app/logs
+
+    env_file:
+      - .env
+
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+
+    depends_on:
+      - postgres
+      - redis
+
+
+  postgres:
+    image: postgres:15
+    container_name: anonymous-postgres
+    restart: unless-stopped
+
+    env_file:
+      - .env
+
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+
+  redis:
+    image: redis:7-alpine
+    container_name: anonymous-redis
+    restart: unless-stopped
+
+
+volumes:
+  pgdata:

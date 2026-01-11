@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: anonymous-bot
+
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+
+  flyway:
+    enabled: true
+
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST}
+      port: ${SPRING_DATA_REDIS_PORT}
+
+
+telegram:
+  bot:
+    token: ${BOT_TOKEN}
+    webhook:
+      path: /webhook
+      secret: ${TELEGRAM_WEBHOOK_SECRET}
+
+
+server:
+  port: 8080
+
+
+logging:
+  level:
+    root: INFO
+

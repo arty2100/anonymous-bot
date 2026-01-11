@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/anonymous_bot
+    username: privet
+    password: privet
+
+  data:
+    redis:
+      host: localhost
+      port: 6380
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+
+  flyway:
+    enabled: true
+telegram:
+  bot:
+    token: 8590415640:AAGqIK98Yr0l6f-a4Gg-JT2E2uVxIbUds7E
+    username: anonymous_ranka_tst_bot
+
+logging:
+  level:
+    root: INFO

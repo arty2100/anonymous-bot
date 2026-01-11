@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: anonymous-postgres-dev
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_DB: anonymous_bot
+      POSTGRES_USER: privet
+      POSTGRES_PASSWORD: privet
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    container_name: anonymous-redis-dev
+    ports:
+      - "6380:6379"
+
+volumes:
+  pgdata:
