@@ -104,10 +104,11 @@ public class TelegramBot extends TelegramLongPollingBot implements BotSender {
         TelegramMessageDto messageDto = new TelegramMessageDto(msg.getChatId(), msg.getFrom().getId(), msg.getText(), msg.getFrom().getId(), msg.getFrom().getUserName(), msg.getFrom().getFirstName(), msg.getFrom().getLastName());
 
         List<BotResponse> responses = commandService.handle(messageDto);
-        for (BotResponse response : responses) {
-            send(response);
+        if (responses != null) {
+            for (BotResponse response : responses) {
+                send(response);
+            }
         }
-
     }
 
     private void manageCallbackRequest(Update update) throws TelegramApiException {
