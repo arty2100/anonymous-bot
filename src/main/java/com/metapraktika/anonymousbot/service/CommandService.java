@@ -5,8 +5,12 @@ import com.metapraktika.anonymousbot.dto.TelegramMessageDto;
 import com.metapraktika.anonymousbot.entity.Invite;
 import com.metapraktika.anonymousbot.entity.Role;
 import com.metapraktika.anonymousbot.entity.User;
+import com.metapraktika.anonymousbot.enums.BotCommandDef;
 import com.metapraktika.anonymousbot.enums.RoleType;
 import com.metapraktika.anonymousbot.enums.UserStatus;
+import com.metapraktika.anonymousbot.helper.BotMessages;
+import com.metapraktika.anonymousbot.helper.HelpGenerator;
+import com.metapraktika.anonymousbot.properties.TelegramBotProperties;
 import com.metapraktika.anonymousbot.repository.RoleRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,13 +33,18 @@ public class CommandService {
     private final BotMessages botMessages;
     private final InviteService inviteService;
     private final RoleRepository roleRepository;
+    private final PermissionService permissionService;
+    private final TelegramBotProperties botProperties;
 
-    public CommandService(RateLimiterService rateLimiterService, UserService userService, BotMessages botMessages, InviteService inviteService, RoleRepository roleRepository) {
+
+    public CommandService(RateLimiterService rateLimiterService, UserService userService, BotMessages botMessages, InviteService inviteService, RoleRepository roleRepository, PermissionService permissionService, TelegramBotProperties botProperties) {
         this.rateLimiterService = rateLimiterService;
         this.userService = userService;
         this.botMessages = botMessages;
         this.inviteService = inviteService;
         this.roleRepository = roleRepository;
+        this.permissionService = permissionService;
+        this.botProperties = botProperties;
     }
 
     @Transactional
@@ -44,6 +53,10 @@ public class CommandService {
         String text = message.getText();
         Long chatId = message.getChatId();
         User user = getOrCreteUser(message);
+
+        if (user.getStatus() == UserStatus.BLOCKED) {
+            return List.of(botMessages.userBlocked(chatId));
+        }
 
         if (!rateLimiterService.isAllowed(user.getTelegramId(), user.getRole().getName())) {
             return List.of(botMessages.rateLimitExceeded(chatId));
@@ -57,6 +70,59 @@ public class CommandService {
             return handleStartCommand(message, user, chatId);
         }
 
+        if (permissionService.canUseBot(user)) {
+
+            if (BotCommandDef.INVITE.command().equals(text)) {
+                if (BotCommandDef.INVITE.isAllowedFor(user.getRole().getName())) {
+                    Invite invite = inviteService.createInvite(user, RoleType.USER);
+                    String link = "https://t.me/" + botProperties.getUsername()
+                            + "?start=" + invite.getInvitation();
+                    return List.of(botMessages.inviteUserAnswer(chatId, link));
+                } else {
+                    return List.of(botMessages.forbiddenCommand(chatId));
+                }
+            }
+
+            if (text.startsWith(BotCommandDef.INVITE_ADMIN.command())) {
+                if (BotCommandDef.INVITE_ADMIN.isAllowedFor(user.getRole().getName())) {
+                    Invite invite = inviteService.createInvite(user, RoleType.ADMIN);
+                    String link = "https://t.me/" + botProperties.getUsername()
+                            + "?start=invite_" + invite.getInvitation();
+                    return List.of(botMessages.inviteAdminAnswer(chatId, link));
+
+                } else {
+                    return List.of(botMessages.forbiddenCommand(chatId));
+                }
+            }
+
+            if (text.startsWith(BotCommandDef.INVITE_SUPER_ADMIN.command())) {
+                if (BotCommandDef.INVITE_SUPER_ADMIN.isAllowedFor(user.getRole().getName())) {
+                    Invite invite = inviteService.createInvite(user, RoleType.SUPER_ADMIN);
+                    String link = "https://t.me/" + botProperties.getUsername()
+                            + "?start=invite_" + invite.getInvitation();
+                    return List.of(botMessages.inviteSuperAdminAnswer(chatId, link));
+
+                } else {
+                    return List.of(botMessages.forbiddenCommand(chatId));
+                }
+            }
+
+            if (text.startsWith(BotCommandDef.HELP.command())) {
+                RoleType role = user.getRole().getName();
+                if (RoleType.USER == role) {
+                    return List.of(botMessages.startMessage(chatId));
+                }
+                return List.of(new BotResponse(chatId, HelpGenerator.generate(role)));
+            }
+
+            if (text.startsWith("/")) {
+                return List.of(botMessages.unknownCommand(chatId));
+            }
+
+        } else {
+            return List.of(botMessages.userNotActive(chatId));
+        }
+
 
         return List.of(botMessages.messageRegistered(chatId));
     }
@@ -66,10 +132,6 @@ public class CommandService {
             User user,
             Long chatId
     ) {
-        if (user.getStatus() == UserStatus.BLOCKED) {
-            return List.of(botMessages.userBlocked(chatId));
-        }
-
         HashMap<Boolean, List<BotResponse>> invitationResponse =
                 getInvitationResponse(user, message);
 

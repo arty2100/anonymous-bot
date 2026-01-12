@@ -1,4 +1,4 @@
-package com.metapraktika.anonymousbot.service;
+package com.metapraktika.anonymousbot.helper;
 
 import com.metapraktika.anonymousbot.dto.BotResponse;
 import org.springframework.stereotype.Component;
@@ -13,6 +13,17 @@ public class BotMessages {
                 """);
     }
 
+    public BotResponse forbiddenCommand(Long chatId) {
+        return new BotResponse(chatId, "Команда недоступна, для просмотро доступных команд используйте  \n/help");
+    }
+
+
+    public BotResponse inviteUserAnswer(Long chatId, String link) {
+        return new BotResponse(
+                chatId,
+                "Ссылка для приглашения пользователя:\n\n" + link
+        );
+    }
 
     public BotResponse messageRegistered(Long chatId) {
         return new BotResponse(chatId, "Ваше сообщение принято! ");
@@ -28,6 +39,28 @@ public class BotMessages {
 
     public BotResponse userBlocked(Long chatId) {
         return new BotResponse(chatId, "Ваш аккаунт не заблокирован. Обратитесь к администратору");
+    }
+
+    public BotResponse unknownCommand(Long chatId) {
+        return new BotResponse(chatId, "Неизвестная команда, для просмотра доступных команд используйте команду \n/help");
+    }
+
+    public BotResponse userNotActive(Long chatId) {
+        return new BotResponse(chatId, "Ваш аккаунт не активен. Ecли вы еще не зарегистрированы введите конманду /start либо обратитесь к администратору");
+    }
+
+    public BotResponse inviteSuperAdminAnswer(Long chatId, String link) {
+        return new BotResponse(
+                chatId,
+                "Ссылка для приглашения супер администратора:\n\n" + link
+        );
+    }
+
+    public BotResponse inviteAdminAnswer(Long chatId, String link) {
+        return new BotResponse(
+                chatId,
+                "Ссылка для приглашения администратора:\n\n" + link
+        );
     }
 
     public BotResponse inviteRequired(Long chatId) {
