@@ -183,7 +183,7 @@ public class TelegramBot extends TelegramLongPollingBot implements BotSender {
             execute(msg);
         } catch (TelegramApiException e) {
             log.error("Failed to send scheduled message. chatId={}", chatId, e);
-            throw new RuntimeException(e);
+            throw new RuntimeException("Telegram API error", e);
         }
     }
 

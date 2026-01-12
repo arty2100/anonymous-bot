@@ -35,9 +35,10 @@ public class CommandService {
     private final RoleRepository roleRepository;
     private final PermissionService permissionService;
     private final TelegramBotProperties botProperties;
+    private final MessageService messageService;
 
 
-    public CommandService(RateLimiterService rateLimiterService, UserService userService, BotMessages botMessages, InviteService inviteService, RoleRepository roleRepository, PermissionService permissionService, TelegramBotProperties botProperties) {
+    public CommandService(RateLimiterService rateLimiterService, UserService userService, BotMessages botMessages, InviteService inviteService, RoleRepository roleRepository, PermissionService permissionService, TelegramBotProperties botProperties, MessageService messageService) {
         this.rateLimiterService = rateLimiterService;
         this.userService = userService;
         this.botMessages = botMessages;
@@ -45,6 +46,7 @@ public class CommandService {
         this.roleRepository = roleRepository;
         this.permissionService = permissionService;
         this.botProperties = botProperties;
+        this.messageService = messageService;
     }
 
     @Transactional
@@ -123,7 +125,7 @@ public class CommandService {
         }
 
 
-        return RoleType.USER == role ? List.of(botMessages.messageRegistered(chatId)) : null;
+        return RoleType.USER == role ? messageService.saveAndNotifyAdmins(user, text) : null;
     }
 
     private List<BotResponse> handleStartCommand(
