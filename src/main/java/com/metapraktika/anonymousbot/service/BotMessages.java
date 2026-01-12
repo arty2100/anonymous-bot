@@ -9,7 +9,7 @@ public class BotMessages {
     public BotResponse startMessage(Long chatId) {
 
         return new BotResponse(chatId, """
-                Задайте анонимный вопрос.....
+                ......задайте анонимный вопрос.....
                 """);
     }
 

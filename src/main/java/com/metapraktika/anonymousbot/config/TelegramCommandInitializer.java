@@ -24,7 +24,7 @@ public class TelegramCommandInitializer {
         try {
             bot.execute(new SetMyCommands(
                     List.of(
-                            new BotCommand("/help", "Поомощь")
+                            new BotCommand("/help", "Помощь")
                     ),
                     new BotCommandScopeDefault(),
                     null

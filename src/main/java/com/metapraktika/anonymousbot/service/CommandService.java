@@ -57,6 +57,7 @@ public class CommandService {
             return handleStartCommand(message, user, chatId);
         }
 
+
         return List.of(botMessages.messageRegistered(chatId));
     }
 
@@ -81,7 +82,7 @@ public class CommandService {
         }
 
         user.setStatus(UserStatus.ACTIVE);
-        return List.of(botMessages.messageRegistered(chatId));
+        return List.of(botMessages.startMessage(chatId));
     }
 
     public HashMap<Boolean, List<BotResponse>> getInvitationResponse(
