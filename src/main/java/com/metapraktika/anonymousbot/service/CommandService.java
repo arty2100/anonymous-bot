@@ -53,7 +53,7 @@ public class CommandService {
         String text = message.getText();
         Long chatId = message.getChatId();
         User user = getOrCreteUser(message);
-
+        RoleType role = user.getRole().getName();
         if (user.getStatus() == UserStatus.BLOCKED) {
             return List.of(botMessages.userBlocked(chatId));
         }
@@ -108,7 +108,6 @@ public class CommandService {
             }
 
             if (text.startsWith(BotCommandDef.HELP.command())) {
-                RoleType role = user.getRole().getName();
                 if (RoleType.USER == role) {
                     return List.of(botMessages.startMessage(chatId));
                 }
@@ -124,7 +123,7 @@ public class CommandService {
         }
 
 
-        return List.of(botMessages.messageRegistered(chatId));
+        return RoleType.USER == role ? List.of(botMessages.messageRegistered(chatId)) : null;
     }
 
     private List<BotResponse> handleStartCommand(
