@@ -21,17 +21,17 @@ public class TelegramCommandInitializer {
 
     @PostConstruct
     public void initCommands() {
-        try {
-            bot.execute(new SetMyCommands(
-                    List.of(
-                            new BotCommand("/help", "Помощь")
-                    ),
-                    new BotCommandScopeDefault(),
-                    null
-            ));
-        } catch (TelegramApiException e) {
-            throw new IllegalStateException("Failed to init bot commands", e);
-        }
+//        try {
+//            bot.execute(new SetMyCommands(
+//                    List.of(
+//                            new BotCommand("/help", "Помощь")
+//                    ),
+//                    new BotCommandScopeDefault(),
+//                    null
+//            ));
+//        } catch (TelegramApiException e) {
+//            throw new IllegalStateException("Failed to init bot commands", e);
+//        }
     }
 
 }

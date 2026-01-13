@@ -2,10 +2,8 @@ package com.metapraktika.anonymousbot.telegram;
 
 
 import com.metapraktika.anonymousbot.dto.BotResponse;
-import com.metapraktika.anonymousbot.dto.TelegramCallbackDto;
 import com.metapraktika.anonymousbot.dto.TelegramMessageDto;
 import com.metapraktika.anonymousbot.properties.TelegramBotProperties;
-import com.metapraktika.anonymousbot.service.CallbackService;
 import com.metapraktika.anonymousbot.service.CommandService;
 import com.metapraktika.anonymousbot.service.UserService;
 import org.slf4j.Logger;
@@ -16,7 +14,6 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
-import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -28,15 +25,13 @@ import java.util.List;
 public class TelegramBot extends TelegramLongPollingBot implements BotSender {
     private static final Logger log = LoggerFactory.getLogger(TelegramBot.class);
     private final CommandService commandService;
-    private final CallbackService callbackService;
     private final UserService userService;
 
     private final TelegramBotProperties properties;
 
 
-    public TelegramBot(CommandService commandService, CallbackService callbackService, UserService userService, TelegramBotProperties properties) {
+    public TelegramBot(CommandService commandService,  UserService userService, TelegramBotProperties properties) {
         this.commandService = commandService;
-        this.callbackService = callbackService;
         this.userService = userService;
         this.properties = properties;
     }
@@ -55,16 +50,10 @@ public class TelegramBot extends TelegramLongPollingBot implements BotSender {
     public void onUpdateReceived(Update update) {
 
         try {
-
             if (update.hasMessage() && update.getMessage().hasText()) {
 
                 manageTextRequest(update);
                 return;
-            }
-
-            if (update.hasCallbackQuery()) {
-                manageCallbackRequest(update);
-
             }
 
         } catch (Exception e) {
@@ -109,15 +98,6 @@ public class TelegramBot extends TelegramLongPollingBot implements BotSender {
                 send(response);
             }
         }
-    }
-
-    private void manageCallbackRequest(Update update) throws TelegramApiException {
-        CallbackQuery cq = update.getCallbackQuery();
-
-        TelegramCallbackDto callbackDto = new TelegramCallbackDto(cq.getMessage().getChatId(), cq.getFrom().getId(), cq.getData(), cq.getFrom().getUserName(), cq.getFrom().getFirstName(), cq.getFrom().getLastName(), cq.getMessage().getMessageId());
-
-        // BotResponse response = callbackService.handle(callbackDto);
-        //send(response);
     }
 
     private void send(BotResponse response) throws TelegramApiException {

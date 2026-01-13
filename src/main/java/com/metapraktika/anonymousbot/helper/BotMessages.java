@@ -128,6 +128,6 @@ public class BotMessages {
     }
 
     public BotResponse newMessageNotification(Long chatId, String text) {
-        return new BotResponse(chatId, "Новое сообщение:\n\n" + text);
+        return new BotResponse(chatId, text);
     }
 }

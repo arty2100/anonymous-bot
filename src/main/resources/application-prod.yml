@@ -23,11 +23,11 @@ spring:
 
 telegram:
   bot:
+    username: ranka_tiho_bot
     token: ${BOT_TOKEN}
     webhook:
-      path: /webhook
+      path: /ranka_tiho/webhook
       secret: ${TELEGRAM_WEBHOOK_SECRET}
-
 
 server:
   port: 8080
