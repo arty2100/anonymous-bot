@@ -74,7 +74,11 @@ public class TelegramBot extends TelegramLongPollingBot implements BotSender {
             if (chatId != null) {
                 log.error("Update handling error. chatId={}", chatId, e);
 
-                SendMessage errorMessage = SendMessage.builder().chatId(chatId.toString()).text("Произошла ошибка. Попробуйте позже.").build();
+                SendMessage errorMessage = SendMessage.builder()
+                        .chatId(chatId.toString())
+                        .text("Произошла ошибка. Попробуйте позже.")
+                        .parseMode("HTML")
+                        .build();
 
                 try {
                     execute(errorMessage);
@@ -123,6 +127,7 @@ public class TelegramBot extends TelegramLongPollingBot implements BotSender {
             edit.setChatId(response.chatId().toString());
             edit.setMessageId(response.messageId());
             edit.setText(response.text());
+            edit.setParseMode("HTML");
             edit.setReplyMarkup(response.keyboard());
             Message executed = (Message) execute(edit);
             if (response.keyboard() != null) {
@@ -134,6 +139,7 @@ public class TelegramBot extends TelegramLongPollingBot implements BotSender {
         SendMessage send = new SendMessage();
         send.setChatId(response.chatId().toString());
         send.setText(response.text());
+        send.setParseMode("HTML");
         send.setReplyMarkup(response.keyboard());
         Message sent = execute(send);
         if (response.keyboard() != null) {

@@ -68,6 +68,7 @@ public class TelegramWebhookBotImpl extends TelegramWebhookBot implements BotSen
                 return SendMessage.builder()
                         .chatId(chatId.toString())
                         .text("Произошла ошибка. Попробуйте позже.")
+                        .parseMode("HTML")
                         .build();
             }
         }
@@ -143,6 +144,7 @@ public class TelegramWebhookBotImpl extends TelegramWebhookBot implements BotSen
                     .chatId(response.chatId().toString())
                     .messageId(response.messageId())
                     .text(response.text())
+                    .parseMode("HTML")
                     .replyMarkup(response.keyboard())
                     .build();
         }
@@ -151,6 +153,7 @@ public class TelegramWebhookBotImpl extends TelegramWebhookBot implements BotSen
         SendMessage send = SendMessage.builder()
                 .chatId(response.chatId().toString())
                 .text(response.text())
+                .parseMode("HTML")
                 .replyMarkup(response.keyboard())
                 .build();
 
