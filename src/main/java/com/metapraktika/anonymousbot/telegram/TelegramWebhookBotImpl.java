@@ -56,6 +56,7 @@ public class TelegramWebhookBotImpl extends TelegramWebhookBot implements BotSen
     @Override
     public BotApiMethod<?> onWebhookUpdateReceived(Update update) {
         try {
+            log.info("Сообщение дошло");
             if (update.hasMessage() && update.getMessage().hasText()) {
                 return manageTextRequest(update);
             }

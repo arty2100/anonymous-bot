@@ -22,7 +22,6 @@ spring:
 
 
 telegram:
-  bot:
     username: ranka_tiho_bot
     token: ${BOT_TOKEN}
     webhook:

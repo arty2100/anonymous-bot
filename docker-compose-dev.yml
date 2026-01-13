@@ -1,23 +1,61 @@
 services:
-  postgres:
-    image: postgres:15
-    container_name: anonymous-postgres-dev
+  app:
+    image: anonymous-bot:latest
+    container_name: anonymous-bot
+    restart: unless-stopped
+
     ports:
-      - "5432:5432"
-    environment:
-      POSTGRES_DB: anonymous_bot
-      POSTGRES_USER: privet
-      POSTGRES_PASSWORD: privet
-      POSTGRES_HOST_AUTH_METHOD: trust
+      - "127.0.0.1:18081:8080"
 
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - ./logs:/app/logs
+
+    env_file:
+      - .env
+
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+    networks:
+      - anonymous-network
+
+  postgres:
+    image: postgres:15
+    container_name: anonymous-postgres
+    restart: unless-stopped
+
+    env_file:
+      - .env
+
+    volumes:
+      - anonymous_pgdata:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+    networks:
+      - anonymous-network
 
   redis:
     image: redis:7-alpine
-    container_name: anonymous-redis-dev
-    ports:
-      - "6380:6379"
+    container_name: anonymous-redis
+    restart: unless-stopped
+
+    networks:
+      - anonymous-network
 
 volumes:
-  pgdata:
+  anonymous_pgdata:
+
+networks:
+  anonymous-network:
+    driver: bridge
